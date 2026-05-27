@@ -1,8 +1,8 @@
-import type { BgConfig } from "./prefabs/ParallaxBackground";
+// import type { BgConfig } from "./prefabs/ParallaxBackground";
 
-type Config = {
-  backgrounds: Record<string, BgConfig>;
-};
+// type Config = {
+//   backgrounds: Record<string, BgConfig>;
+// };
 
 export default {
   backgrounds: {
@@ -20,4 +20,4 @@ export default {
       panSpeed: 0.2,
     },
   },
-} as Config;
+};

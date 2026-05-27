@@ -3,6 +3,7 @@ import { Container, Text, Graphics } from "pixi.js";
 import { centerObjects } from "../utils/misc";
 import Keyboard from "../core/Keyboard";
 import { SceneUtils } from "../core/App";
+import Door from "../prefabs/Door";
 
 export default class Game extends Container {
   name = "Game";
@@ -10,6 +11,7 @@ export default class Game extends Container {
   private keyboard = Keyboard.getInstance();
 
   private background!: Background;
+
 
   constructor(protected utils: SceneUtils) {
     super();
@@ -45,6 +47,8 @@ export default class Game extends Container {
     this.removeChildren();
 
     this.background = new Background({ texture: "background" });
+
+
 
     this.addChild(this.background);
   }
