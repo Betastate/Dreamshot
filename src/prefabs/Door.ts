@@ -1,5 +1,5 @@
 import { Container, Sprite, Texture } from "pixi.js";
-import { Application } from "pixi.js";
+import DoorHandle from "./DoorHandle";
 
 export type DoorState = "closed" | "open" | "opening" | "closing";
 
@@ -13,16 +13,22 @@ export type DoorConfig = {
     width?: number;
     height?: number;
     x?: number;
-    y: number;
+    y?: number;
 };
 
 export default class Door extends Container {
     name = "Door";
 
+    private doorHandle: DoorHandle = new DoorHandle({ textures: { handle: "door-handle", shadow: "door-handle-shadow" }, x: 0.5, y: 0.5 });
+
     sprite: Sprite;
     private _state: DoorState = "closed";
 
     private textures: Record<DoorState, Texture>;
+
+    private secret: number[] = [7, -3, 5] //Positive numbers are CW, negative ones are CCW
+
+    private currentCombination: number[] = []
 
     constructor(config: DoorConfig) {
         super();
@@ -51,10 +57,11 @@ export default class Door extends Container {
         this.sprite.x = config.x || 0;
         this.sprite.y = config.y || 0;
 
-        this.sprite.anchor.set(0.45,0.5);
+        this.sprite.anchor.set(0.45, 0.5);
 
-        this.addChild(this.sprite);
+        this.addChild(this.sprite, this.doorHandle);
     }
+
 
     get state(): DoorState {
         return this._state;
