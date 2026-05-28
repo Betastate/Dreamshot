@@ -1,6 +1,7 @@
 import { Container, Sprite, Texture } from "pixi.js";
 import Keyboard from "../core/Keyboard";
 import config from "../config";
+import gsap from "gsap";
 
 export type HandleRotation = number;
 
@@ -25,6 +26,8 @@ export default class DoorHandle extends Container {
     private win?: () => void;
 
     private _handleRotation: HandleRotation = 0;
+
+    private rotating = false;
 
     private textures: Record<string, Texture>;
 
@@ -104,6 +107,10 @@ export default class DoorHandle extends Container {
     }
 
     rotate(amount: number) {
+        if (this.rotating) {
+            return;
+        }
+
         this._handleRotation += amount;
         this.sprite.rotation += amount * 1.0472; //1.0472 radians in 60 degrees
         this.shadowSprite.rotation += amount * 1.0472; //1.0472 radians in 60 degrees
@@ -133,26 +140,53 @@ export default class DoorHandle extends Container {
         }
 
         console.log(this.currentCombination, this.secret)
-        if (this.currentCombination.length === this.secret.length) {
-            let equal = true;
-            for (let i = 0; i < this.currentCombination.length; i++) {
-                if (this.currentCombination[i] !== this.secret[i]) {
-                    equal = false;
-                    break;
-                }
-            }
+        let equal = true;
+        for (let i = 0; i < this.currentCombination.length - 1; i++) {
+            if (this.currentCombination[i] !== this.secret[i]) {
+                equal = false;
 
-            if (equal) {
-                //WIN THE GAME
-                console.log("You Win!")
-                this.win!();
+                this.reset()
+                break;
             }
+        }
+        if (this.secret[this.currentCombination.length - 1] > 0) {
+            if (this.currentCombination[this.currentCombination.length - 1] > this.secret[this.currentCombination.length - 1] || this.currentCombination[this.currentCombination.length - 1] < 0) {
+                this.reset();
+            }
+        }
+        else {
+            if (this.currentCombination[this.currentCombination.length - 1] < this.secret[this.currentCombination.length - 1] || this.currentCombination[this.currentCombination.length - 1] > 0) {
+                this.reset();
+            }
+        }
+
+        if (this.secret[this.currentCombination.length - 1] !== this.currentCombination[this.currentCombination.length - 1]) {
+            equal = false;
+        }
+
+        if (equal && this.currentCombination.length === this.secret.length) {
+            //WIN THE GAME
+            console.log("You Win!")
+            this.rotating = true;
+            this.win!();
         }
 
     }
 
     private static getRandom() {
 
+    }
+
+    reset() {
+        this.currentCombination = [];
+        this.rotating = true;
+        gsap.to(this.sprite, {
+            rotation: this.sprite.rotation + Math.PI * 4,  // rotate 45 degrees more
+            duration: 1.5,       // half a second
+            onComplete: () => {
+                this.rotating = false;
+            }
+        });
     }
 
     onActionPress = (action: string) => {
