@@ -2,7 +2,7 @@
 
 ## 🎮 Simple 2D Game Framework for [PixiJS](https://pixijs.com) using [Vite⚡](https://vitejs.dev/)
 
-Get started with your first Pixi game in a few quick steps. Spares the hussle dealing with asset loading and initialisation trivia.
+Use "W" and "S" to rotate the handle left and right.
 
 ### Highlights 🌟
 

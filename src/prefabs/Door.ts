@@ -88,6 +88,8 @@ export default class Door extends Container {
 
         this.shineSprite = new Sprite(Texture.from(config.textures.shine))
         this.shineSprite.anchor.set(0.5)
+        this.shineSprite.width = 150;
+        this.shineSprite.height = 150;
         this.shineSprite.x = window.innerWidth / 2;
         this.shineSprite.y = window.innerHeight / 2;
         this.shineSprite.alpha = 0;

@@ -44,6 +44,7 @@ export default class Game extends Container {
   }
 
   async start() {
+    Keyboard.reset();
     this.removeChildren();
 
     this.background = new Background({ texture: "background", start: this.start.bind(this) });

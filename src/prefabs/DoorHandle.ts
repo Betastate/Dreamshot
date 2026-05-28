@@ -28,7 +28,7 @@ export default class DoorHandle extends Container {
 
     private textures: Record<string, Texture>;
 
-    private secret: number[] = [7, -3, 5] //Positive numbers are CW, negative ones are CCW
+    private secret: number[] = [Math.floor((Math.random() * 9) + 1), Math.floor((Math.random() * 9) + 1) * -1, Math.floor((Math.random() * 9) + 1)] //Positive numbers are CW, negative ones are CCW
 
     private currentCombination: number[] = []
 
@@ -36,6 +36,8 @@ export default class DoorHandle extends Container {
 
     constructor(config: DoorHandleConfig) {
         super();
+
+        console.log(`Secret is ${this.secret[0]}CW ${this.secret[1] * -1}CCW ${this.secret[2]}CW`)
 
         // Load all textures
         this.textures = {
@@ -142,6 +144,7 @@ export default class DoorHandle extends Container {
 
             if (equal) {
                 //WIN THE GAME
+                console.log("You Win!")
                 this.win!();
             }
         }

@@ -57,6 +57,24 @@ export default class Keyboard extends utils.EventEmitter {
     return Keyboard.instance;
   }
 
+  public static reset(): void {
+    // Only reset if instance exists
+    if (!Keyboard.instance) return;
+
+    // Remove all EventEmitter listeners (from onAction subscriptions)
+    Keyboard.instance.removeAllListeners(Keyboard.states.ACTION);
+
+    // Remove document event listeners
+    document.removeEventListener("keydown", Keyboard.instance.keyDownHandler);
+    document.removeEventListener("keyup", Keyboard.instance.keyUpHandler);
+
+    // Clear key state map
+    Keyboard.instance.keyMap.clear();
+
+    // Create new instance (which will add fresh event listeners)
+    Keyboard.instance = new Keyboard();
+  }
+
   public getAction(action: keyof typeof Keyboard.actions): boolean {
     return this.isKeyDown(Keyboard.actionKeyMap[action]);
   }
