@@ -187,6 +187,13 @@ export default class DoorHandle extends Container {
                 this.rotating = false;
             }
         });
+        gsap.to(this.shadowSprite, {
+            rotation: this.sprite.rotation + Math.PI * 4,  // rotate 45 degrees more
+            duration: 1.5,       // half a second
+            onComplete: () => {
+                this.rotating = false;
+            }
+        });
     }
 
     onActionPress = (action: string) => {
