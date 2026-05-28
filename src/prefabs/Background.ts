@@ -3,6 +3,7 @@ import Door from "./Door";
 
 export type BgConfig = {
     texture: string;
+    start: () => void
 };
 
 export default class Background extends Container {
@@ -15,6 +16,7 @@ export default class Background extends Container {
     constructor(
         protected config: BgConfig = {
             texture: "",
+            start: () => { }
         }
     ) {
         super();
@@ -50,14 +52,16 @@ export default class Background extends Container {
         this.door = new Door({
             textures: {
                 open: "door-open",
-                closed: "door-closed"
+                closed: "door-closed",
+                shine: "shine"
             },
             width: doorWidth,
             height: doorHeight,
             x: window.innerWidth / 2,
-            y: window.innerHeight / 2
+            y: window.innerHeight / 2,
+            restart: config.start
         })
-        this.addChild( this.door);
+        this.addChild(this.door);
 
 
 

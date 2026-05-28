@@ -46,7 +46,7 @@ export default class Game extends Container {
   async start() {
     this.removeChildren();
 
-    this.background = new Background({ texture: "background" });
+    this.background = new Background({ texture: "background", start: this.start.bind(this) });
 
 
 

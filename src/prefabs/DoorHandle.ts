@@ -1,5 +1,6 @@
 import { Container, Sprite, Texture } from "pixi.js";
 import Keyboard from "../core/Keyboard";
+import config from "../config";
 
 export type HandleRotation = number;
 
@@ -12,12 +13,17 @@ export type DoorHandleConfig = {
     height?: number;
     x?: number;
     y?: number;
+    win?: () => void;
 };
 
 export default class DoorHandle extends Container {
     name = "Door";
 
     sprite: Sprite;
+    shadowSprite: Sprite;
+
+    private win?: () => void;
+
     private _handleRotation: HandleRotation = 0;
 
     private textures: Record<string, Texture>;
@@ -37,7 +43,7 @@ export default class DoorHandle extends Container {
             [config.textures.shadow]: Texture.from(config.textures.shadow)
         };
 
-        console.log(this.textures)
+        this.win = config.win;
 
         this.sprite = new Sprite(this.textures[config.textures.handle]);
 
@@ -65,6 +71,25 @@ export default class DoorHandle extends Container {
 
         this.addChild(this.sprite);
 
+
+        this.shadowSprite = new Sprite(this.textures[config.textures.shadow]);
+        this.shadowSprite.anchor.set(0.5);
+
+        // Position it relative to the handle (example: slightly offset)
+        this.shadowSprite.x = this.sprite.x + 10;
+        this.shadowSprite.y = this.sprite.y;
+
+        // Optionally scale it similarly
+        this.shadowSprite.width = this.sprite.width;
+        this.shadowSprite.height = this.sprite.height;
+
+        // Optional: make it more transparent or darker
+        this.shadowSprite.alpha = 0.4;
+
+        // Add children: shadow first so handle is on top
+        this.addChild(this.shadowSprite);
+        this.addChild(this.sprite);
+
         this.keyboard.onAction(({ action, buttonState }) => {
             if (buttonState === "pressed") this.onActionPress(action);
             else if (buttonState === "released") this.onActionRelease(action);
@@ -79,10 +104,10 @@ export default class DoorHandle extends Container {
     rotate(amount: number) {
         this._handleRotation += amount;
         this.sprite.rotation += amount * 1.0472; //1.0472 radians in 60 degrees
+        this.shadowSprite.rotation += amount * 1.0472; //1.0472 radians in 60 degrees
 
         if (this.currentCombination.length === 0) {
             this.currentCombination.push(amount);
-            console.log("yes")
         }
         else if (this.currentCombination[this.currentCombination.length - 1] > 0) {
             if (amount > 0) {
@@ -105,7 +130,7 @@ export default class DoorHandle extends Container {
             this.currentCombination = this.currentCombination.slice(1)
         }
 
-        console.log(this.currentCombination)
+        console.log(this.currentCombination, this.secret)
         if (this.currentCombination.length === this.secret.length) {
             let equal = true;
             for (let i = 0; i < this.currentCombination.length; i++) {
@@ -117,7 +142,7 @@ export default class DoorHandle extends Container {
 
             if (equal) {
                 //WIN THE GAME
-                console.log("BANGARANGA")
+                this.win!();
             }
         }
 
